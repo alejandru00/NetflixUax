@@ -13,6 +13,9 @@ from django.shortcuts import render
 from django.db.models import Q  # For complex queries
 from django.core.paginator import Paginator
 
+from django.http import HttpResponse
+
+
 
 # Function-based views
 def movie_details(request, movie_id):
@@ -79,6 +82,7 @@ def playlist(request):
     playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
     return render(request, 'streaming/playlist.html', {'playlists': playlist})
 
+
 def movie_details_page(request, movie_id):
     # Fetch the movie from the database
     movie = get_object_or_404(Movie, id=movie_id)
@@ -141,7 +145,7 @@ def add_to_playlist(request, movie_id):
         else:
             playlist.movies.add(movie)  # Add to playlist
 
-    return redirect('home')  # Redirect back to home
+    return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
 def populate_movies():
