@@ -173,3 +173,17 @@ def populate_movies():
                 )
         else:
             print(f"Failed to fetch page {page}. Status code: {response.status_code}")
+
+
+from django.shortcuts import render
+
+def search_series(request):
+    query = request.GET.get('q', '')  # Obtén la consulta desde el formulario
+    series_list = []  # Aquí deberías cargar las series que coinciden con la búsqueda desde tu base de datos o API
+    # Ejemplo: Filtrar series basándote en la consulta
+    # series_list = Series.objects.filter(title__icontains=query)
+    context = {
+        'query': query,
+        'series': series_list,
+    }
+    return render(request, 'streaming/search_results.html', context)

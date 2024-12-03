@@ -1,0 +1,69 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>Mis series</title>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <form action="{% url 'search-series' %}" method="get" class="search-form">
+                <img src="{% static 'img/magnifying-glass.png' %}" alt="Buscar" style="width: 20px; vertical-align: middle; margin-right: 10px;">
+                <input type="text" name="q" placeholder="Search..." class="search-bar">
+            </form>
+        </div>
+        <div class="header-center">
+            <h1>Mis series y películas!</h1>
+        </div>
+        <div class="header-right">
+            <nav>
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'img/home.png' %}" alt="Home" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Home
+                </a>
+                <a href="{% url 'series' %}">
+                    <img src="{% static 'img/series.png' %}" alt="Series" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Series
+                </a>
+                <a href="{% url 'playlist' %}">
+                    <img src="{% static 'img/checklist.png' %}" alt="Lista" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Lista
+                </a>
+            </nav>
+        </div>
+    </header>      
+    <main>
+        <h2 class="section-title">Series populares</h2>
+        <div class="movie-grid">
+            {% for serie in series %}
+            <div class="movie-card">
+                <img src="https://image.tmdb.org/t/p/w500{{ serie.poster_path }}" alt="{{ serie.title }}" class="movie-poster">
+                <div class="movie-info">
+                    <h3>{{ serie.title }}</h3>
+                    <p>{{ serie.release_date }}</p>
+                    <p>{{ serie.description|truncatechars:100 }}</p>
+                </div>
+                <form action="{% url 'add-to-playlist' serie.id %}" method="post" class="star-form">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-playlist-button {% if serie.id in playlists %}favourited{% endif %}">
+                        {% if serie.id in playlists %}
+                        &#9733; <!-- Filled Star -->
+                        {% else %}
+                        &#9734; <!-- Empty Star -->
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2024 Netflix</p>
+    </footer>
+</body>
+</html>
