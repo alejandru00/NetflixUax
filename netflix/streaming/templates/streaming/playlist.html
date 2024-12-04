@@ -39,6 +39,7 @@
     </header>
     
     <main>
+        <!-- Movies Section -->
         <h2 class="section-title">Movies in My Playlist</h2>
         <div class="movie-grid">
             {% for movie in playlist.movies.all %}
@@ -51,18 +52,19 @@
                 </div>
             </div>
             {% empty %}
-            <p>No movies in your playlist yet.</p>
+            <p class="empty-playlist-message">No movies in your playlist yet.</p>
             {% endfor %}
         </div>
         
+        <!-- Series Section -->
         <h2 class="section-title">Series in My Playlist</h2>
-        <div class="series-grid">
+        <div class="movie-grid"> <!-- Cambiado a movie-grid -->
             {% for series in playlist.series.all %}
-            <div class="series-card">
-                <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="series-poster">
-                <div class="series-info">
+            <div class="movie-card"> <!-- Cambiado a movie-card -->
+                <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster"> <!-- Cambiado a movie-poster -->
+                <div class="movie-info"> <!-- Cambiado a movie-info -->
                     <h3>{{ series.title }}</h3>
-                    <p>{{ series.release_date|date:"Y" }}</p>
+                    <p>{{ series.release_date }}</p>
                     <p>{{ series.description|truncatechars:100 }}</p>
                 </div>
             </div>

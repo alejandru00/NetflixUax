@@ -268,13 +268,14 @@ def series_page(request):
 
     # Obtener la playlist del usuario
     playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
-    playlists = list(playlist.series.values_list("id", flat=True))  # Series IDs
+    playlists_series_ids = list(playlist.series.values_list("id", flat=True))  # IDs de series en la playlist
 
-    # Pasar las series y la lista de playlists al template
+    # Pasar las series y las playlists al template
     return render(request, 'streaming/series.html', {
         'series': all_series,
-        'playlists': playlists,  # IDs de series en la playlist
+        'playlists': playlists_series_ids,  # IDs de series en la playlist
     })
+
 
 
 
