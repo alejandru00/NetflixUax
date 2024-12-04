@@ -110,7 +110,7 @@ def movie_details_page(request, movie_id):
 
 def search_movies(request):
     query = request.GET.get('q', '')  # Captura el término de búsqueda
-    movies = []
+    movie_list = []  # Lista formateada de películas
 
     if query:  # Asegúrate de que hay un término de búsqueda
         # Llamada a la API de TMDB
@@ -125,12 +125,31 @@ def search_movies(request):
         response = requests.get(api_url, params=params)
 
         if response.status_code == 200:  # La respuesta fue exitosa
-            movies = response.json().get('results', [])  # Extrae los resultados
+            movie_results = response.json().get('results', [])  # Extrae los resultados
+            # Formatea las películas para enviarlas al template
+            movie_list = [
+                {
+                    'id': movie.get('id'),
+                    'title': movie.get('title', 'No Title Available'),
+                    'release_date': movie.get('release_date', 'No Date Available'),
+                    'overview': movie.get('overview', 'No Description Available'),
+                    'poster_path': movie.get('poster_path', ''),  # Usa un valor vacío si no está disponible
+                }
+                for movie in movie_results
+            ]
         else:
             print(f"Error in TMDB API call: {response.status_code}")
 
+    # Obtener los IDs de las películas en la playlist
+    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
+    playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
+
     # Renderiza los resultados en el template
-    return render(request, 'streaming/search_results.html', {'movies': movies, 'query': query})
+    return render(request, 'streaming/search_results.html', {
+        'movies': movie_list,
+        'query': query,
+        'playlists': playlist_movie_ids,  # IDs de las películas en la playlist
+    })
 
 
 

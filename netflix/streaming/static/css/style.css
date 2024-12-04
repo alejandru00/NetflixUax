@@ -101,6 +101,12 @@ header h1 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para destacar */
 }
 
+.serie-poster {
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Sombra para destacar */
+}
+
 /* Movie Info */
 .movie-info h3 {
     font-size: 16px;
