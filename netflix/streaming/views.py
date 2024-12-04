@@ -109,23 +109,29 @@ def movie_details_page(request, movie_id):
 
 
 def search_movies(request):
-    query = request.GET.get('q', '')  # Get the search term from the request
+    query = request.GET.get('q', '')  # Captura el término de búsqueda
     movies = []
-    if query:
-        # TMDB API call to search movies
+
+    if query:  # Asegúrate de que hay un término de búsqueda
+        # Llamada a la API de TMDB
         api_url = "https://api.themoviedb.org/3/search/movie"
         params = {
-            'api_key': settings.TMDB_API_KEY,
+            'api_key': settings.TMDB_API_KEY,  # Tu clave API
             'language': 'en-US',
-            'query': query,
+            'query': query,  # Término de búsqueda
             'page': 1,
             'include_adult': False
         }
         response = requests.get(api_url, params=params)
-        if response.status_code == 200:
-            movies = response.json().get('results', [])
 
+        if response.status_code == 200:  # La respuesta fue exitosa
+            movies = response.json().get('results', [])  # Extrae los resultados
+        else:
+            print(f"Error in TMDB API call: {response.status_code}")
+
+    # Renderiza los resultados en el template
     return render(request, 'streaming/search_results.html', {'movies': movies, 'query': query})
+
 
 
 
@@ -207,23 +213,29 @@ def series_details_page(request, series_id):
     return render(request, "streaming/series_details.html", {"series": series})
 
 def search_series(request):
-    query = request.GET.get('q', '')  # Get the search term from the request
+    query = request.GET.get('q', '')  # Captura el término de búsqueda
     series_list = []
-    if query:
-        # TMDB API call to search series
+
+    if query:  # Asegúrate de que hay un término de búsqueda
+        # Llamada a la API de TMDB
         api_url = "https://api.themoviedb.org/3/search/tv"
         params = {
-            'api_key': settings.TMDB_API_KEY,
+            'api_key': settings.TMDB_API_KEY,  # Tu clave API
             'language': 'en-US',
-            'query': query,
+            'query': query,  # Término de búsqueda
             'page': 1,
             'include_adult': False
         }
         response = requests.get(api_url, params=params)
-        if response.status_code == 200:
-            series_list = response.json().get('results', [])
 
+        if response.status_code == 200:  # La respuesta fue exitosa
+            series_list = response.json().get('results', [])  # Extrae los resultados
+        else:
+            print(f"Error in TMDB API call: {response.status_code}")
+
+    # Renderiza los resultados en el template
     return render(request, 'streaming/search_results_series.html', {'series_list': series_list, 'query': query})
+
 
 def add_to_series_playlist(request, series_id):
     if request.method == 'POST':
