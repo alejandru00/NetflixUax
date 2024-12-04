@@ -73,6 +73,7 @@ header h1 {
     grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 20px;
     margin: 20px;
+    margin-bottom: 50px;
 }
 
 /* Movie Card */
@@ -148,10 +149,11 @@ header h1 {
 
 /* Mensaje de lista vacía */
 .empty-playlist-message {
-    text-align: right; /* Alinea el texto hacia la derecha */
-    margin-right: 20px; /* Espacio desde el borde derecho */
+    text-align: left; /* Mantén el texto alineado a la izquierda */
+    margin-left: 40px; /* Aplica una sangría desde el borde izquierdo */
     margin-top: 20px; /* Espacio desde el contenido anterior */
     margin-bottom: 40px; /* Espacio adicional debajo */
-    font-size: 16px; /* Tamaño de texto un poco más grande */
-    color: #b3b3b3; /* Un gris claro para diferenciar */
+    font-size: 16px; /* Tamaño de texto adecuado */
+    color: #b3b3b3; /* Gris claro */
 }
+
