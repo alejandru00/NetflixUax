@@ -245,8 +245,17 @@ def search_series(request):
         for series in series_list
     ]
 
+    # Obtener IDs de las series en la playlist
+    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
+    playlist_series_ids = list(playlist.series.values_list("id", flat=True))
+
     # Renderiza los resultados en el template
-    return render(request, 'streaming/search_results_series.html', {'series_list': formatted_series_list, 'query': query})
+    return render(request, 'streaming/search_results_series.html', {
+        'series_list': formatted_series_list,
+        'query': query,
+        'playlists': playlist_series_ids,  # IDs de las series en la playlist
+    })
+
 
 
 
