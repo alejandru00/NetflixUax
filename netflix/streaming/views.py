@@ -91,10 +91,16 @@ def home(request):
     })
 
 def playlist(request):
-    # Obtén o crea la playlist predeterminada
     playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
-    # Renderiza la plantilla y pasa la playlist como contexto
-    return render(request, 'streaming/playlist.html', {'playlist': playlist})
+    playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
+    playlist_series_ids = list(playlist.series.values_list("id", flat=True))
+
+    return render(request, 'streaming/playlist.html', {
+        'playlist': playlist,
+        'playlist_movie_ids': playlist_movie_ids,
+        'playlist_series_ids': playlist_series_ids,
+    })
+
 
 
 

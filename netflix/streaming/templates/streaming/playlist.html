@@ -50,32 +50,53 @@
                     <p>{{ movie.release_date }}</p>
                     <p>{{ movie.description|truncatechars:100 }}</p>
                 </div>
+                <form action="{% url 'add-to-playlist' movie.id %}" method="post" class="star-form">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-playlist-button {% if movie.id in playlist_movie_ids %}favourited{% endif %}">
+                        {% if movie.id in playlist_movie_ids %}
+                        &#9733; <!-- Filled Star (Red) -->
+                        {% else %}
+                        &#9734; <!-- Empty Star -->
+                        {% endif %}
+                    </button>
+                </form>
             </div>
             {% empty %}
             <p class="empty-playlist-message">No movies in your playlist yet.</p>
             {% endfor %}
         </div>
-        
+
         <!-- Series Section -->
         <h2 class="section-title">Series in My Playlist</h2>
-        <div class="movie-grid"> <!-- Cambiado a movie-grid -->
+        <div class="movie-grid">
             {% for series in playlist.series.all %}
-            <div class="movie-card"> <!-- Cambiado a movie-card -->
-                <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster"> <!-- Cambiado a movie-poster -->
-                <div class="movie-info"> <!-- Cambiado a movie-info -->
+            <div class="movie-card">
+                <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
+                <div class="movie-info">
                     <h3>{{ series.title }}</h3>
                     <p>{{ series.release_date }}</p>
                     <p>{{ series.description|truncatechars:100 }}</p>
                 </div>
+                <form action="{% url 'add-to-series-playlist' series.id %}" method="post" class="star-form">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-playlist-button {% if series.id in playlist_series_ids %}favourited{% endif %}">
+                        {% if series.id in playlist_series_ids %}
+                        &#9733; <!-- Filled Star (Red) -->
+                        {% else %}
+                        &#9734; <!-- Empty Star -->
+                        {% endif %}
+                    </button>
+                </form>
             </div>
             {% empty %}
             <p class="empty-playlist-message">No series in your playlist yet.</p>
             {% endfor %}
         </div>
+
     </main>
 
     <footer>
-        <p>&copy; 2024 MovieStream</p>
+        <p>&copy; Alejandro</p>
     </footer>
 </body>
 </html>
