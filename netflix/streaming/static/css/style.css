@@ -145,3 +145,13 @@ header h1 {
     transform: scale(1.2); /* Efecto de zoom */
     color: #e50914; /* Rojo destacado */
 }
+
+/* Mensaje de lista vacía */
+.empty-playlist-message {
+    text-align: right; /* Alinea el texto hacia la derecha */
+    margin-right: 20px; /* Espacio desde el borde derecho */
+    margin-top: 20px; /* Espacio desde el contenido anterior */
+    margin-bottom: 40px; /* Espacio adicional debajo */
+    font-size: 16px; /* Tamaño de texto un poco más grande */
+    color: #b3b3b3; /* Un gris claro para diferenciar */
+}
