@@ -22,11 +22,22 @@
         </div>
         <div class="header-right">
             <nav>
-                <a href="{% url 'home' %}">Home</a>
-                <a href="{% url 'playlist' %}">Playlist</a>
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'img/home.png' %}" alt="Home" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Films
+                </a>
+                <a href="{% url 'series' %}">
+                    <img src="{% static 'img/tv.png' %}" alt="Series" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Series
+                </a>
+                <a href="{% url 'playlist' %}">
+                    <img src="{% static 'img/checklist.png' %}" alt="Playlist" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Playlist
+                </a>
             </nav>
         </div>
     </header>
+    
     <main>
         <h2 class="section-title">Movies in My Playlist</h2>
         <div class="movie-grid">
