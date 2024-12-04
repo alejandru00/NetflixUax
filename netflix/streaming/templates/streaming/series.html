@@ -47,10 +47,14 @@
                 <div class="movie-info">
                     <h3>{{ series.title }}</h3>
                     <p>{{ series.release_date }}</p>
+                    <p>{{ series.description|truncatechars:100 }}</p>
                 </div>
             </div>
+            {% empty %}
+            <p>No series available at the moment.</p>
             {% endfor %}
         </div>
+        
     </main>
     <footer>
         <p>&copy; 2024 MovieStream</p>

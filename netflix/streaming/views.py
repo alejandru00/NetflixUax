@@ -192,17 +192,6 @@ def populate_movies():
 
 from django.shortcuts import render
 
-def search_series(request):
-    query = request.GET.get('q', '')  # Obtén la consulta desde el formulario
-    series_list = []  # Aquí deberías cargar las series que coinciden con la búsqueda desde tu base de datos o API
-    # Ejemplo: Filtrar series basándote en la consulta
-    # series_list = Series.objects.filter(title__icontains=query)
-    context = {
-        'query': query,
-        'series': series_list,
-    }
-    return render(request, 'streaming/search_results.html', context)
-
 # Views for series
 
 def series_details_page(request, series_id):
@@ -266,7 +255,41 @@ def add_to_series_playlist(request, series_id):
     return redirect(request.META.get('HTTP_REFERER', '/'))
  
 def series_page(request):
-    # Obtén todas las series de la base de datos
-    all_series = Series.objects.all()
-    # Pasa las series al contexto
+    # Populate the database if it's empty
+    if Series.objects.count() == 0:
+        populate_series()
+
+    # Fetch all series
+    all_series = Series.objects.all().order_by('-rating')  # Order by rating for consistency
     return render(request, 'streaming/series.html', {'series': all_series})
+
+
+def populate_series():
+    """
+    Fetch and save the top 100 popular TV series from TMDB to the database.
+    """
+    for page in range(1, 6):  # Fetch up to 5 pages of series (20 series per page = 100 series)
+        api_url = "https://api.themoviedb.org/3/tv/popular"
+        params = {
+            'api_key': settings.TMDB_API_KEY,
+            'language': 'en-US',
+            'page': page,
+        }
+        response = requests.get(api_url, params=params)
+        if response.status_code == 200:
+            popular_series = response.json().get('results', [])
+            for series in popular_series:
+                # Avoid duplicates by using get_or_create
+                Series.objects.get_or_create(
+                    id=series['id'],
+                    defaults={
+                        'title': series.get('name', 'Unknown Title'),
+                        'description': series.get('overview', 'No description available.'),
+                        'release_date': series.get('first_air_date', 'Unknown Date'),
+                        'genre': 'Unknown',  # TMDB does not provide genres directly for series
+                        'rating': series.get('vote_average', 0),
+                        'poster_path': series.get('poster_path', ''),
+                    },
+                )
+        else:
+            print(f"Failed to fetch page {page}. Status code: {response.status_code}")
