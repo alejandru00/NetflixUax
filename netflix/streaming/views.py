@@ -75,20 +75,18 @@ def home(request):
     if Series.objects.count() == 0:
         populate_series()
 
-    # Fetch the top 100 movies and series sorted by rating
+    # Fetch the top 100 movies sorted by rating
     movies = Movie.objects.all().order_by('-rating')[:100]
-    series = Series.objects.all().order_by('-rating')[:100]
 
-    # Fetch IDs of movies and series in the user's playlist
+    # Fetch IDs of movies in the user's playlist
     playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
     playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
-    playlist_series_ids = list(playlist.series.values_list("id", flat=True))
 
     return render(request, 'streaming/home.html', {
         'movies': movies,
-        'series': series,
-        'playlists': playlist_movie_ids + playlist_series_ids,  # Combine both for simplicity
+        'playlists': playlist_movie_ids,  # Pass only movie IDs
     })
+
 
 def playlist(request):
     playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
