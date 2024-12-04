@@ -48,9 +48,16 @@
             <div class="movie-card">
                 <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
                 <div class="movie-info">
-                    <h3>{{ series.title }}</h3>
-                    <p>{{ series.release_date }}</p>
+                    <h3>{{ series.title }}</h3> <!-- Título de la serie -->
+                    <p>{{ series.release_date }}</p> <!-- Fecha de lanzamiento -->
+                    <p>{{ series.overview|truncatechars:100 }}</p> <!-- Descripción -->
                 </div>
+                <form action="{% url 'add-to-series-playlist' series.id %}" method="post" class="star-form">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-playlist-button">
+                        &#9734; <!-- Estrella para añadir a la lista -->
+                    </button>
+                </form>
             </div>
             {% endfor %}
         </div>
@@ -58,6 +65,7 @@
         <p>No series found for your search.</p>
         {% endif %}
     </main>
+    
     <footer>
         <p>&copy; Alejandro</p>
     </footer>

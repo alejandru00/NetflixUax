@@ -233,8 +233,21 @@ def search_series(request):
         else:
             print(f"Error in TMDB API call: {response.status_code}")
 
+    # Mapea las claves necesarias para el template
+    formatted_series_list = [
+        {
+            'id': series.get('id'),
+            'title': series.get('name', 'No Title Available'),  # `name` para series
+            'release_date': series.get('first_air_date', 'No Date Available'),  # `first_air_date` para series
+            'overview': series.get('overview', 'No Description Available'),  # `overview` para la descripción
+            'poster_path': series.get('poster_path', ''),  # `poster_path` para la imagen
+        }
+        for series in series_list
+    ]
+
     # Renderiza los resultados en el template
-    return render(request, 'streaming/search_results_series.html', {'series_list': series_list, 'query': query})
+    return render(request, 'streaming/search_results_series.html', {'series_list': formatted_series_list, 'query': query})
+
 
 
 def add_to_series_playlist(request, series_id):
