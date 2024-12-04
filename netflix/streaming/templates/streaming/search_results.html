@@ -42,15 +42,7 @@
     <main>
         <h2 class="section-title">Search Results for "{{ query }}"</h2>
         <div class="movie-grid">
-            {% for movie in movies %}
-            <div class="movie-card">
-                <!-- Movie Display -->
-            </div>
-            {% endfor %}
-        </div>
-        <div class="movie-grid">
             {% if movies %}
-            <div class="movie-grid">
                 {% for movie in movies %}
                 <div class="movie-card">
                     <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
@@ -61,13 +53,10 @@
                     </div>
                 </div>
                 {% endfor %}
-            </div>
             {% else %}
-            <p>No movies found for "{{ query }}".</p>
+                <p>No movies found for "{{ query }}".</p>
             {% endif %}
-
         </div>
-        
     </main>
     
     <footer>
