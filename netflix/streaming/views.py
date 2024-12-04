@@ -12,7 +12,15 @@ from django.conf import settings
 from django.shortcuts import render
 from django.db.models import Q  # For complex queries
 from django.core.paginator import Paginator
-
+from django.shortcuts import get_object_or_404, redirect
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from .models import Movie, Playlist, Recommendation, Series
+from .serializers import MovieSerializer, PlaylistSerializer, RecommendationSerializer, SeriesSerializer
+from django.shortcuts import render
+import requests
+from django.conf import settings
 from django.http import HttpResponse
 
 
@@ -191,3 +199,69 @@ def search_series(request):
         'series': series_list,
     }
     return render(request, 'streaming/search_results.html', context)
+
+# Views for series
+
+def series_details_page(request, series_id):
+    series = get_object_or_404(Series, id=series_id)
+    return render(request, "streaming/series_details.html", {"series": series})
+
+def search_series(request):
+    query = request.GET.get('q', '')  # Get the search term from the request
+    series_list = []
+    if query:
+        # TMDB API call to search series
+        api_url = "https://api.themoviedb.org/3/search/tv"
+        params = {
+            'api_key': settings.TMDB_API_KEY,
+            'language': 'en-US',
+            'query': query,
+            'page': 1,
+            'include_adult': False
+        }
+        response = requests.get(api_url, params=params)
+        if response.status_code == 200:
+            series_list = response.json().get('results', [])
+
+    return render(request, 'streaming/search_results_series.html', {'series_list': series_list, 'query': query})
+
+def add_to_series_playlist(request, series_id):
+    if request.method == 'POST':
+        # Get or create the default playlist
+        playlist, _ = Playlist.objects.get_or_create(name='My Playlist')
+
+        try:
+            # Check if the series exists in the database
+            series = Series.objects.get(id=series_id)
+        except Series.DoesNotExist:
+            # Fetch series details from TMDB API
+            api_url = f"https://api.themoviedb.org/3/tv/{series_id}"
+            params = {'api_key': settings.TMDB_API_KEY, 'language': 'en-US'}
+            response = requests.get(api_url, params=params)
+
+            if response.status_code == 200:
+                data = response.json()
+                # Save the series in the database
+                series = Series.objects.create(
+                    id=series_id,
+                    title=data['name'],
+                    description=data['overview'],
+                    release_date=data['first_air_date'],
+                    genre=', '.join([genre['name'] for genre in data['genres']]),
+                    rating=data['vote_average'],
+                    poster_path=data['poster_path'],
+                )
+            else:
+                return redirect('home')  # Handle API failure
+
+        # Toggle the series in the playlist
+        if series in playlist.series.all():
+            playlist.series.remove(series)  # Remove from playlist
+        else:
+            playlist.series.add(series)  # Add to playlist
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+def series_page(request):
+    series = Series.objects.all()  # Obtén todas las series de la base de datos
+    return render(request, 'streaming/series.html', {'series': series})

@@ -7,18 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>All Series</title>
+    <title>All Movies</title>
 </head>
 <body>
     <header>
         <div class="header-left">
-            <form action="{% url 'search-series' %}" method="get" class="search-form">
+            <form action="{% url 'search-movies' %}" method="get" class="search-form">
                 <img src="{% static 'img/magnifying-glass.png' %}" alt="Search" style="width: 20px; vertical-align: middle; margin-right: 10px;">
-                <input type="text" name="q" placeholder="Search series..." class="search-bar">
+                <input type="text" name="q" placeholder="Search..." class="search-bar">
             </form>
         </div>
         <div class="header-center">
-            <h1>All Series</h1>
+            <h1>All Movies</h1>
         </div>
         <div class="header-right">
             <nav>
@@ -28,14 +28,14 @@
         </div>
     </header>
     <main>
-        <h2 class="section-title">Series</h2>
+        <h2 class="section-title">Movies</h2>
         <div class="movie-grid">
-            {% for series in series %}
+            {% for movie in movies %}
             <div class="movie-card">
-                <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
+                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
                 <div class="movie-info">
-                    <h3>{{ series.title }}</h3>
-                    <p>{{ series.release_date }}</p>
+                    <h3>{{ movie.title }}</h3>
+                    <p>{{ movie.release_date }}</p>
                 </div>
             </div>
             {% endfor %}

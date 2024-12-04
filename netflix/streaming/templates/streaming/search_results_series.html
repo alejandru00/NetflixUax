@@ -7,18 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>All Series</title>
+    <title>Search Series Results</title>
 </head>
 <body>
     <header>
         <div class="header-left">
             <form action="{% url 'search-series' %}" method="get" class="search-form">
                 <img src="{% static 'img/magnifying-glass.png' %}" alt="Search" style="width: 20px; vertical-align: middle; margin-right: 10px;">
-                <input type="text" name="q" placeholder="Search series..." class="search-bar">
+                <input type="text" name="q" placeholder="Search series..." class="search-bar" value="{{ query }}">
             </form>
         </div>
         <div class="header-center">
-            <h1>All Series</h1>
+            <h1>Series Search</h1>
         </div>
         <div class="header-right">
             <nav>
@@ -28,9 +28,10 @@
         </div>
     </header>
     <main>
-        <h2 class="section-title">Series</h2>
+        <h2 class="section-title">Results for "{{ query }}"</h2>
+        {% if series_list %}
         <div class="movie-grid">
-            {% for series in series %}
+            {% for series in series_list %}
             <div class="movie-card">
                 <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
                 <div class="movie-info">
@@ -40,6 +41,9 @@
             </div>
             {% endfor %}
         </div>
+        {% else %}
+        <p>No series found for your search.</p>
+        {% endif %}
     </main>
     <footer>
         <p>&copy; 2024 MovieStream</p>

@@ -14,11 +14,11 @@
         <div class="header-left">
             <form action="{% url 'search-movies' %}" method="get" class="search-form">
                 <img src="{% static 'img/magnifying-glass.png' %}" alt="Buscar" style="width: 20px; vertical-align: middle; margin-right: 10px;">
-                <input type="text" name="q" placeholder="Search..." class="search-bar">
+                <input type="text" name="q" placeholder="Search movies or series..." class="search-bar">
             </form>
         </div>
         <div class="header-center">
-            <h1>My Movies</h1>
+            <h1>Movies & Series</h1>
         </div>
         <div class="header-right">
             <nav>
@@ -27,12 +27,17 @@
                     Home
                 </a>
                 <a href="{% url 'playlist' %}">
-                    <img src="{% static 'img/checklist.png' %}" alt="Lista" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    <img src="{% static 'img/checklist.png' %}" alt="Playlist" style="width: 24px; vertical-align: middle; margin-right: 5px;">
                     Playlist
+                </a>
+                <a href="{% url 'series' %}">
+                    <img src="{% static 'img/tv.png' %}" alt="Series" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Series
                 </a>
             </nav>
         </div>
-    </header>      
+    </header>
+       
     <main>
         <h2 class="section-title">Popular Movies</h2>
         <div class="movie-grid">

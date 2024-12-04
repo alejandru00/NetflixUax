@@ -1,29 +1,51 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <title>{{ movie.title }}</title>
+    <title>All Movies</title>
 </head>
 <body>
-    <header>
-        <h1>{{ movie.title }}</h1>
-        <a href="{% url 'home' %}">Back to Home</a>
-    </header>
-    <main>
-        <div class="movie-details">
-            <img src="{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
+<header>
+    <div class="header">
+        <h1>All Movies</h1>
+        <nav>
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'series' %}">Series</a>
+            <a href="{% url 'playlist' %}">Playlist</a>
+        </nav>
+    </div>
+</header>
+<main>
+    <h2 class="section-title">Browse All Movies</h2>
+    <div class="movie-grid">
+        {% for movie in movies %}
+        <div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
             <div class="movie-info">
-                <h2>{{ movie.title }}</h2>
-                <p><strong>Genre:</strong> {{ movie.genre }}</p>
+                <h3>{{ movie.title }}</h3>
                 <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
                 <p><strong>Rating:</strong> {{ movie.rating }}</p>
-                <p>{{ movie.description }}</p>
+                <p>{{ movie.description|truncatechars:100 }}</p>
             </div>
+            <form action="{% url 'add-to-playlist' movie.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
+                    {% if movie.id in playlists %}
+                    &#9733; <!-- Filled Star -->
+                    {% else %}
+                    &#9734; <!-- Empty Star -->
+                    {% endif %}
+                </button>
+            </form>
         </div>
-    </main>
+        {% endfor %}
+    </div>
+</main>
+<footer>
+    <p>&copy; 2024 Netflix</p>
+</footer>
 </body>
 </html>

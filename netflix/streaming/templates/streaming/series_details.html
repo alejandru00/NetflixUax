@@ -1,0 +1,29 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <title>{{ series.title }}</title>
+</head>
+<body>
+    <header>
+        <h1>{{ series.title }}</h1>
+        <a href="{% url 'home' %}">Back to Home</a>
+    </header>
+    <main>
+        <div class="movie-details">
+            <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
+            <div class="movie-info">
+                <h2>{{ series.title }}</h2>
+                <p><strong>Genre:</strong> {{ series.genre }}</p>
+                <p><strong>Release Date:</strong> {{ series.release_date }}</p>
+                <p><strong>Rating:</strong> {{ series.rating }}</p>
+                <p>{{ series.description }}</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

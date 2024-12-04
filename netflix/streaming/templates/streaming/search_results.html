@@ -34,34 +34,38 @@
         </div>
     </header>    
     <main>
-        <h2 class="section-title">Resultados para "{{ query }}"</h2>
-        {% if movies %}
+        <h2 class="section-title">Search Results for "{{ query }}"</h2>
         <div class="movie-grid">
             {% for movie in movies %}
             <div class="movie-card">
-                <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
-                <div class="movie-info">
-                    <h3>{{ movie.title }}</h3>
-                    <p>{{ movie.release_date }}</p>
-                    <p>{{ movie.overview|truncatechars:100 }}</p>
+                <!-- Movie Display -->
+            </div>
+            {% endfor %}
+        </div>
+        <div class="series-grid">
+            {% for series in series_list %}
+            <div class="series-card">
+                <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="series-poster">
+                <div class="series-info">
+                    <h3>{{ series.title }}</h3>
+                    <p>{{ series.release_date }}</p>
+                    <p>{{ series.overview|truncatechars:100 }}</p>
                 </div>
-                <form action="{% url 'add-to-playlist' movie.id %}" method="post" class="star-form">
+                <form action="{% url 'add-to-series-playlist' series.id %}" method="post">
                     {% csrf_token %}
-                    <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
-                        {% if movie.id in playlists %}
-                        &#9733; <!-- Filled Star -->
+                    <button type="submit" class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}">
+                        {% if series.id in playlists %}
+                        &#9733;
                         {% else %}
-                        &#9734; <!-- Empty Star -->
+                        &#9734;
                         {% endif %}
                     </button>
                 </form>
             </div>
             {% endfor %}
         </div>
-        {% else %}
-        <p>No se encontraron películas que coincidan con tu búsqueda.</p>
-        {% endif %}
     </main>
+    
     <footer>
         <p>&copy; 2024 Netflix</p>
     </footer>
