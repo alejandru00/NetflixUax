@@ -18,17 +18,23 @@
             </form>
         </div>
         <div class="header-center">
-            <h1>Mis películas y series!</h1>
+            <h1>Search for movies</h1>
         </div>
         <div class="header-right">
             <nav>
                 <a href="{% url 'home' %}">
-                    <img src="{% static 'img/home.png' %}" alt="Home" style="width: 24px; vertical-align: middle; margin-right: 5px;">
-                    Home
+                    <img src="{% static 'img/film.png' %}" alt="Home" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Films
                 </a>
+                
+                <a href="{% url 'series' %}">
+                    <img src="{% static 'img/tv-show.png' %}" alt="Series" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Series
+                </a>
+
                 <a href="{% url 'playlist' %}">
-                    <img src="{% static 'img/checklist.png' %}" alt="Lista" style="width: 24px; vertical-align: middle; margin-right: 5px;">
-                    Lista
+                    <img src="{% static 'img/checklist.png' %}" alt="Playlist" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Playlist
                 </a>
             </nav>
         </div>
@@ -44,6 +50,7 @@
         </div>
         <div class="movie-grid">
             {% if movies %}
+            <div class="movie-grid">
                 {% for movie in movies %}
                 <div class="movie-card">
                     <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ movie.title }}" class="movie-poster">
@@ -54,15 +61,17 @@
                     </div>
                 </div>
                 {% endfor %}
+            </div>
             {% else %}
-                <p>No movies found for "{{ query }}".</p>
+            <p>No movies found for "{{ query }}".</p>
             {% endif %}
+
         </div>
         
     </main>
     
     <footer>
-        <p>&copy; 2024 Netflix</p>
+        <p>&copy; Alejandro</p>
     </footer>
 </body>
 </html>
