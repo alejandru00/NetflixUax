@@ -49,12 +49,19 @@
                     <p>{{ series.release_date }}</p>
                     <p>{{ series.description|truncatechars:100 }}</p>
                 </div>
+                <form action="{% url 'add-to-series-playlist' series.id %}" method="post" class="star-form">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}">
+                        {% if series.id in playlists %}
+                        &#9733; <!-- Filled Star -->
+                        {% else %}
+                        &#9734; <!-- Empty Star -->
+                        {% endif %}
+                    </button>
+                </form>
             </div>
-            {% empty %}
-            <p>No series available at the moment.</p>
             {% endfor %}
         </div>
-        
     </main>
     <footer>
         <p>&copy; 2024 MovieStream</p>

@@ -7,13 +7,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Nunito:wght@400;700&display=swap" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
-        <title>Movies</title>
+        <title>Movies & Series</title>
     </head>
 <body>
     <header>
         <div class="header-left">
             <form action="{% url 'search-movies' %}" method="get" class="search-form">
-                <img src="{% static 'img/magnifying-glass.png' %}" alt="Buscar" style="width: 20px; vertical-align: middle; margin-right: 10px;">
+                <img src="{% static 'img/magnifying-glass.png' %}" alt="Search" style="width: 20px; vertical-align: middle; margin-right: 10px;">
                 <input type="text" name="q" placeholder="Search movies or series..." class="search-bar">
             </form>
         </div>
@@ -55,6 +55,30 @@
                     {% csrf_token %}
                     <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
                         {% if movie.id in playlists %}
+                        &#9733; <!-- Filled Star -->
+                        {% else %}
+                        &#9734; <!-- Empty Star -->
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+
+        <h2 class="section-title">Popular Series</h2>
+        <div class="movie-grid">
+            {% for series in series %}
+            <div class="movie-card">
+                <img src="https://image.tmdb.org/t/p/w500{{ series.poster_path }}" alt="{{ series.title }}" class="movie-poster">
+                <div class="movie-info">
+                    <h3>{{ series.title }}</h3>
+                    <p>{{ series.release_date }}</p>
+                    <p>{{ series.description|truncatechars:100 }}</p>
+                </div>
+                <form action="{% url 'add-to-series-playlist' series.id %}" method="post" class="star-form">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}">
+                        {% if series.id in playlists %}
                         &#9733; <!-- Filled Star -->
                         {% else %}
                         &#9734; <!-- Empty Star -->
