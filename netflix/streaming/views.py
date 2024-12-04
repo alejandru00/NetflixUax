@@ -264,7 +264,9 @@ def add_to_series_playlist(request, series_id):
             playlist.series.add(series)  # Add to playlist
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
-
+ 
 def series_page(request):
-    series = Series.objects.all()  # Obtén todas las series de la base de datos
-    return render(request, 'streaming/series.html', {'series': series})
+    # Obtén todas las series de la base de datos
+    all_series = Series.objects.all()
+    # Pasa las series al contexto
+    return render(request, 'streaming/series.html', {'series': all_series})
