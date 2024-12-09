@@ -30,10 +30,11 @@
                     <img src="{% static 'img/tv-show.png' %}" alt="Series" style="width: 24px; vertical-align: middle; margin-right: 5px;">
                     Series
                 </a>
-                <a href="{% url 'playlist' %}">
+                <a href="{% if user.is_authenticated %}{% url 'playlist' %}{% else %}{% url 'login' %}{% endif %}">
                     <img src="{% static 'img/checklist.png' %}" alt="Playlist" style="width: 24px; vertical-align: middle; margin-right: 5px;">
                     Playlist
                 </a>
+                
                 {% if user.is_authenticated %}
                 <a href="{% url 'logout' %}">
                     <img src="{% static 'img/logout.png' %}" alt="Logout" style="width: 24px; vertical-align: middle; margin-right: 5px;">

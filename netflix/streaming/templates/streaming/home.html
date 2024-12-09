@@ -32,10 +32,11 @@
                     Series
                 </a>
             
-                <a href="{% url 'playlist' %}">
+                <a href="{% if user.is_authenticated %}{% url 'playlist' %}{% else %}{% url 'login' %}{% endif %}">
                     <img src="{% static 'img/checklist.png' %}" alt="Playlist" style="width: 24px; vertical-align: middle; margin-right: 5px;">
                     Playlist
                 </a>
+                
             
                 {% if user.is_authenticated %}
                     <a href="{% url 'logout' %}">
