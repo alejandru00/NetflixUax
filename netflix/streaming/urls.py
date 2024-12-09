@@ -1,4 +1,5 @@
 from django.urls import path
+from django.urls import include, path   
 from . import views
 
 urlpatterns = [
@@ -13,5 +14,6 @@ urlpatterns = [
     path('search-series/', views.search_series, name='search-series'),  # Búsqueda de series
 
     # Añadir a playlist
-    path('add-to-playlist/<int:content_id>/<str:content_type>/', views.add_to_playlist, name='add-to-playlist')
+    path('add-to-playlist/<int:content_id>/<str:content_type>/', views.add_to_playlist, name='add-to-playlist'),
+    path('auth/', include('authentication.urls')),
 ]

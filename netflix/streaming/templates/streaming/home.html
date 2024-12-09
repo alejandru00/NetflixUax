@@ -67,15 +67,15 @@
                 </div>
                 <form action="{% if user.is_authenticated %}{% url 'add-to-playlist' movie.id 'movie' %}{% else %}{% url 'login' %}{% endif %}" 
       method="post" class="star-form">
-                    {% csrf_token %}
-                    <button type="submit" class="add-to-playlist-button {% if user.is_authenticated and movie.id in playlists %}favourited{% endif %}">
-                        {% if user.is_authenticated and movie.id in playlists %}
-                            &#9733; <!-- Estrella llena -->
-                        {% else %}
-                            &#9734; <!-- Estrella vacía -->
-                        {% endif %}
-                    </button>
-                 </form>
+                {% csrf_token %}
+                <button type="submit" class="add-to-playlist-button {% if user.is_authenticated and movie.id in playlists %}favourited{% endif %}">
+                    {% if user.is_authenticated and movie.id in playlists %}
+                        &#9733; <!-- Estrella llena -->
+                    {% else %}
+                        &#9734; <!-- Estrella vacía -->
+                    {% endif %}
+                </button>
+</form>
                 
             </div>
             {% endfor %}
