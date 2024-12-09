@@ -61,19 +61,16 @@
                     <p>{{ series.release_date }}</p>
                     <p>{{ series.description|truncatechars:100 }}</p>
                 </div>
-                <form action="{% url 'add-to-playlist' series.id 'series' %}" method="post" class="star-form">
+                <form action="{% if user.is_authenticated %}{% url 'add-to-playlist' movie.id 'movie' %}{% else %}{% url 'login' %}{% endif %}" 
+      method="post" class="star-form">
                     {% csrf_token %}
-                    {% if user.is_authenticated %}
-                        <button type="submit" class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}">
-                            {% if series.id in playlists %}
-                            &#9733;
-                            {% else %}
-                            &#9734;
-                            {% endif %}
-                        </button>
-                    {% else %}
-                        <a href="{% url 'login' %}" class="login-to-save">★</a>
-                    {% endif %}
+                    <button type="submit" class="add-to-playlist-button {% if user.is_authenticated and movie.id in playlists %}favourited{% endif %}">
+                        {% if user.is_authenticated and movie.id in playlists %}
+                            &#9733; <!-- Estrella llena -->
+                        {% else %}
+                            &#9734; <!-- Estrella vacía -->
+                        {% endif %}
+                    </button>
                 </form>
             </div>
             {% endfor %}
