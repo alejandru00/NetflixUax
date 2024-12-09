@@ -300,9 +300,12 @@ def search_series(request):
         for series in series_list
     ]
 
-    # Obtener IDs de las series en la playlist
-    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
-    playlist_series_ids = list(playlist.series.values_list("id", flat=True))
+    # Obtener IDs de las series en la playlist del usuario
+    if request.user.is_authenticated:
+        playlist, _ = Playlist.objects.get_or_create(user=request.user)
+        playlist_series_ids = list(playlist.series.values_list("id", flat=True))
+    else:
+        playlist_series_ids = []
 
     # Renderiza los resultados en el template
     return render(request, 'streaming/search_results_series.html', {

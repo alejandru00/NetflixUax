@@ -50,7 +50,7 @@
                     <p>{{ movie.release_date }}</p> <!-- Fecha -->
                     <p>{{ movie.overview|truncatechars:100 }}</p> <!-- Descripción -->
                 </div>
-                <form action="{% url 'add-to-playlist' movie.id %}" method="post" class="star-form">
+                <form action="{% url 'add-to-playlist' movie.id 'movie' %}" method="post" class="star-form">
                     {% csrf_token %}
                     <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
                         {% if movie.id in playlists %}
