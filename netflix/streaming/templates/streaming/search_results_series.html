@@ -52,7 +52,7 @@
                     <p>{{ series.release_date }}</p> <!-- Fecha de lanzamiento -->
                     <p>{{ series.overview|truncatechars:100 }}</p> <!-- Descripción -->
                 </div>
-                <form action="{% url 'add-to-series-playlist' series.id %}" method="post" class="star-form">
+                <form action="{% url 'add-to-playlist' series.id 'series' %}" method="post" class="star-form">
                     {% csrf_token %}
                     <button type="submit" class="add-to-playlist-button {% if series.id in playlists %}favourited{% endif %}">
                         {% if series.id in playlists %}
