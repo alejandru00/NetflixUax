@@ -50,7 +50,7 @@
                     <p>{{ movie.release_date }}</p>
                     <p>{{ movie.description|truncatechars:100 }}</p>
                 </div>
-                <form action="{% url 'add-to-playlist' movie.id %}" method="post" class="star-form">
+                <form action="{% url 'add-to-playlist' movie.id 'movie' %}" method="post" class="star-form">
                     {% csrf_token %}
                     <button type="submit" class="add-to-playlist-button {% if movie.id in playlist_movie_ids %}favourited{% endif %}">
                         {% if movie.id in playlist_movie_ids %}
@@ -65,6 +65,7 @@
             <p class="empty-playlist-message">No movies in your playlist yet.</p>
             {% endfor %}
         </div>
+        
 
         <!-- Series Section -->
         <h2 class="section-title">Series in My Playlist</h2>
@@ -77,7 +78,7 @@
                     <p>{{ series.release_date }}</p>
                     <p>{{ series.description|truncatechars:100 }}</p>
                 </div>
-                <form action="{% url 'add-to-series-playlist' series.id %}" method="post" class="star-form">
+                <form action="{% url 'add-to-playlist' series.id 'series' %}" method="post" class="star-form">
                     {% csrf_token %}
                     <button type="submit" class="add-to-playlist-button {% if series.id in playlist_series_ids %}favourited{% endif %}">
                         {% if series.id in playlist_series_ids %}

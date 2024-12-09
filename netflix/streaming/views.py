@@ -23,6 +23,8 @@ import requests
 from django.conf import settings
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404
 
 
 
@@ -93,9 +95,13 @@ def home(request):
     })
 
 
+
 @login_required
 def playlist(request):
-    playlist, _ = Playlist.objects.get_or_create(user=request.user)
+    # Obtiene o crea la playlist del usuario
+    playlist, created = Playlist.objects.get_or_create(user=request.user)
+
+    # Obtiene los IDs de películas y series en la playlist
     playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
     playlist_series_ids = list(playlist.series.values_list("id", flat=True))
 
@@ -104,6 +110,7 @@ def playlist(request):
         'playlist_movie_ids': playlist_movie_ids,
         'playlist_series_ids': playlist_series_ids,
     })
+
 
 
 
