@@ -22,6 +22,7 @@ from django.shortcuts import render
 import requests
 from django.conf import settings
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 
 
 
@@ -79,8 +80,12 @@ def home(request):
     movies = Movie.objects.all().order_by('-rating')[:100]
 
     # Fetch IDs of movies in the user's playlist
-    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
-    playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
+    if request.user.is_authenticated:
+        playlist, _ = Playlist.objects.get_or_create(user=request.user)
+        playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
+    else:
+        playlist_movie_ids = []
+
 
     return render(request, 'streaming/home.html', {
         'movies': movies,
@@ -88,8 +93,9 @@ def home(request):
     })
 
 
+@login_required
 def playlist(request):
-    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
+    playlist, _ = Playlist.objects.get_or_create(user=request.user)
     playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
     playlist_series_ids = list(playlist.series.values_list("id", flat=True))
 
@@ -110,7 +116,7 @@ def movie_details_page(request, movie_id):
 
 def search_movies(request):
     query = request.GET.get('q', '')  # Captura el término de búsqueda
-    movie_list = []  # Lista formateada de películas
+    movies = []
 
     if query:  # Asegúrate de que hay un término de búsqueda
         # Llamada a la API de TMDB
@@ -125,28 +131,20 @@ def search_movies(request):
         response = requests.get(api_url, params=params)
 
         if response.status_code == 200:  # La respuesta fue exitosa
-            movie_results = response.json().get('results', [])  # Extrae los resultados
-            # Formatea las películas para enviarlas al template
-            movie_list = [
-                {
-                    'id': movie.get('id'),
-                    'title': movie.get('title', 'No Title Available'),
-                    'release_date': movie.get('release_date', 'No Date Available'),
-                    'overview': movie.get('overview', 'No Description Available'),
-                    'poster_path': movie.get('poster_path', ''),  # Usa un valor vacío si no está disponible
-                }
-                for movie in movie_results
-            ]
+            movies = response.json().get('results', [])  # Extrae los resultados
         else:
             print(f"Error in TMDB API call: {response.status_code}")
 
-    # Obtener los IDs de las películas en la playlist
-    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
-    playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
+    # Obtener IDs de películas en la playlist del usuario
+    if request.user.is_authenticated:
+        playlist, _ = Playlist.objects.get_or_create(user=request.user)
+        playlist_movie_ids = list(playlist.movies.values_list("id", flat=True))
+    else:
+        playlist_movie_ids = []
 
     # Renderiza los resultados en el template
     return render(request, 'streaming/search_results.html', {
-        'movies': movie_list,
+        'movies': movies,
         'query': query,
         'playlists': playlist_movie_ids,  # IDs de las películas en la playlist
     })
@@ -154,42 +152,73 @@ def search_movies(request):
 
 
 
-def add_to_playlist(request, movie_id):
+def add_to_playlist(request, content_id, content_type):
     if request.method == 'POST':
-        # Get or create the default playlist
-        playlist, _ = Playlist.objects.get_or_create(name='My Playlist')
+        # Get or create the user's playlist
+        playlist, _ = Playlist.objects.get_or_create(user=request.user)
 
-        try:
-            # Check if the movie exists in the database
-            movie = Movie.objects.get(id=movie_id)
-        except Movie.DoesNotExist:
-            # Fetch movie details from TMDB API
-            api_url = f"https://api.themoviedb.org/3/movie/{movie_id}"
-            params = {'api_key': settings.TMDB_API_KEY, 'language': 'en-US'}
-            response = requests.get(api_url, params=params)
+        # Determinar si es una película o serie
+        if content_type == 'movie':
+            try:
+                content = Movie.objects.get(id=content_id)
+            except Movie.DoesNotExist:
+                # Fetch movie details from TMDB API
+                api_url = f"https://api.themoviedb.org/3/movie/{content_id}"
+                params = {'api_key': settings.TMDB_API_KEY, 'language': 'en-US'}
+                response = requests.get(api_url, params=params)
 
-            if response.status_code == 200:
-                data = response.json()
-                # Save the movie in the database
-                movie = Movie.objects.create(
-                    id=movie_id,
-                    title=data['title'],
-                    description=data['overview'],
-                    release_date=data['release_date'],
-                    genre=', '.join([genre['name'] for genre in data['genres']]),
-                    rating=data['vote_average'],
-                    poster_path=data['poster_path'],
-                )
-            else:
-                return redirect('home')  # Handle API failure
+                if response.status_code == 200:
+                    data = response.json()
+                    content = Movie.objects.create(
+                        id=content_id,
+                        title=data['title'],
+                        description=data['overview'],
+                        release_date=data['release_date'],
+                        genre=', '.join([genre['name'] for genre in data['genres']]),
+                        rating=data['vote_average'],
+                        poster_path=data['poster_path'],
+                    )
+                else:
+                    return redirect('home')  # Handle API failure
+        elif content_type == 'series':
+            try:
+                content = Series.objects.get(id=content_id)
+            except Series.DoesNotExist:
+                # Fetch series details from TMDB API
+                api_url = f"https://api.themoviedb.org/3/tv/{content_id}"
+                params = {'api_key': settings.TMDB_API_KEY, 'language': 'en-US'}
+                response = requests.get(api_url, params=params)
 
-        # Toggle the movie in the playlist
-        if movie in playlist.movies.all():
-            playlist.movies.remove(movie)  # Remove from playlist
+                if response.status_code == 200:
+                    data = response.json()
+                    content = Series.objects.create(
+                        id=content_id,
+                        title=data['name'],
+                        description=data['overview'],
+                        release_date=data['first_air_date'],
+                        genre=', '.join([genre['name'] for genre in data['genres']]),
+                        rating=data['vote_average'],
+                        poster_path=data['poster_path'],
+                    )
+                else:
+                    return redirect('home')  # Handle API failure
         else:
-            playlist.movies.add(movie)  # Add to playlist
+            return redirect('home')  # Handle invalid content type
+
+        # Toggle the content in the playlist
+        if content_type == 'movie':
+            if content in playlist.movies.all():
+                playlist.movies.remove(content)  # Remove movie
+            else:
+                playlist.movies.add(content)  # Add movie
+        elif content_type == 'series':
+            if content in playlist.series.all():
+                playlist.series.remove(content)  # Remove series
+            else:
+                playlist.series.add(content)  # Add series
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
 
 
 def populate_movies():
@@ -275,45 +304,6 @@ def search_series(request):
         'playlists': playlist_series_ids,  # IDs de las series en la playlist
     })
 
-
-
-
-def add_to_series_playlist(request, series_id):
-    if request.method == 'POST':
-        # Get or create the default playlist
-        playlist, _ = Playlist.objects.get_or_create(name='My Playlist')
-
-        try:
-            # Check if the series exists in the database
-            series = Series.objects.get(id=series_id)
-        except Series.DoesNotExist:
-            # Fetch series details from TMDB API
-            api_url = f"https://api.themoviedb.org/3/tv/{series_id}"
-            params = {'api_key': settings.TMDB_API_KEY, 'language': 'en-US'}
-            response = requests.get(api_url, params=params)
-
-            if response.status_code == 200:
-                data = response.json()
-                # Save the series in the database
-                series = Series.objects.create(
-                    id=series_id,
-                    title=data['name'],
-                    description=data['overview'],
-                    release_date=data['first_air_date'],
-                    genre=', '.join([genre['name'] for genre in data['genres']]),
-                    rating=data['vote_average'],
-                    poster_path=data['poster_path'],
-                )
-            else:
-                return redirect('home')  # Handle API failure
-
-        # Toggle the series in the playlist
-        if series in playlist.series.all():
-            playlist.series.remove(series)  # Remove from playlist
-        else:
-            playlist.series.add(series)  # Add to playlist
-
-    return redirect(request.META.get('HTTP_REFERER', '/'))
  
 def series_page(request):
     # Poblar la base de datos si está vacía
@@ -324,8 +314,11 @@ def series_page(request):
     all_series = Series.objects.all().order_by('-rating')
 
     # Obtener la playlist del usuario
-    playlist, _ = Playlist.objects.get_or_create(name="My Playlist")
-    playlists_series_ids = list(playlist.series.values_list("id", flat=True))  # IDs de series en la playlist
+    if request.user.is_authenticated:
+        playlist, _ = Playlist.objects.get_or_create(user=request.user)
+        playlists_series_ids = list(playlist.series.values_list("id", flat=True))  # IDs de series en la playlist
+    else:
+        playlists_series_ids = []
 
     # Pasar las series y las playlists al template
     return render(request, 'streaming/series.html', {
