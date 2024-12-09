@@ -35,4 +35,4 @@ def login_view(request):
 # Vista de logout
 def logout_view(request):
     logout(request)
-    return redirect('login')
+    return redirect(request.META.get('HTTP_REFERER', '/'))

@@ -34,6 +34,17 @@
                     <img src="{% static 'img/checklist.png' %}" alt="Playlist" style="width: 24px; vertical-align: middle; margin-right: 5px;">
                     Playlist
                 </a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}">
+                        <img src="{% static 'img/logout.png' %}" alt="Logout" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                        Logout
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}">
+                        <img src="{% static 'img/login.png' %}" alt="Login" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                        Login
+                    </a>
+                {% endif %}
             </nav>
         </div>
     </header>
@@ -46,17 +57,17 @@
             <div class="movie-card">
                 <img src="https://image.tmdb.org/t/p/w500{{ movie.poster_path }}" alt="{{ series.title }}" class="movie-poster">
                 <div class="movie-info">
-                    <h3>{{ movie.title }}</h3> <!-- Título -->
-                    <p>{{ movie.release_date }}</p> <!-- Fecha -->
-                    <p>{{ movie.overview|truncatechars:100 }}</p> <!-- Descripción -->
+                    <h3>{{ movie.title }}</h3>
+                    <p>{{ movie.release_date }}</p>
+                    <p>{{ movie.overview|truncatechars:100 }}</p>
                 </div>
                 <form action="{% url 'add-to-playlist' movie.id 'movie' %}" method="post" class="star-form">
                     {% csrf_token %}
                     <button type="submit" class="add-to-playlist-button {% if movie.id in playlists %}favourited{% endif %}">
                         {% if movie.id in playlists %}
-                        &#9733; <!-- Estrella llena -->
+                        &#9733;
                         {% else %}
-                        &#9734; <!-- Estrella vacía -->
+                        &#9734;
                         {% endif %}
                     </button>
                 </form>
