@@ -313,12 +313,11 @@ def series_page(request):
     # Obtener todas las series
     all_series = Series.objects.all().order_by('-rating')
 
-    # Obtener la playlist del usuario
+    # Obtener la playlist del usuario si está autenticado
+    playlists_series_ids = []
     if request.user.is_authenticated:
         playlist, _ = Playlist.objects.get_or_create(user=request.user)
         playlists_series_ids = list(playlist.series.values_list("id", flat=True))  # IDs de series en la playlist
-    else:
-        playlists_series_ids = []
 
     # Pasar las series y las playlists al template
     return render(request, 'streaming/series.html', {

@@ -22,10 +22,19 @@
         </div>
         <div class="header-right">
             <nav>
-                <a href="{% url 'home' %}">Films</a>
-                <a href="{% url 'series' %}">Series</a>
+                <a href="{% url 'home' %}">
+                    <img src="{% static 'img/film.png' %}" alt="Home" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Films
+                </a>
+                <a href="{% url 'series' %}">
+                    <img src="{% static 'img/tv-show.png' %}" alt="Series" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Series
+                </a>
+                <a href="{% url 'playlist' %}">
+                    <img src="{% static 'img/checklist.png' %}" alt="Playlist" style="width: 24px; vertical-align: middle; margin-right: 5px;">
+                    Playlist
+                </a>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'playlist' %}">Playlist</a>
                     <a href="{% url 'logout' %}">Logout</a>
                 {% else %}
                     <a href="{% url 'login' %}">Login</a>
