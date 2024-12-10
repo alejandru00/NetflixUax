@@ -171,3 +171,28 @@
     text-align: left; /* Alineación del texto */
 }
 
+
+
+/* Estilo para enlaces de navegación */
+.nav-link {
+    color: #ffffff;
+    margin-left: 20px;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600; /* Letras más gorditas */
+    display: flex;
+    align-items: center;
+    transition: color 0.3s ease-in-out;
+    background: none; /* Sin fondo */
+    border: none; /* Sin borde */
+    cursor: pointer; /* Manito para clic */
+}
+
+.nav-link:hover {
+    color: #ffe600; /* Cambia el color al pasar el cursor */
+}
+
+/* Asegura el mismo estilo para formularios dentro del nav */
+.nav-link-form {
+    display: inline; /* Mantenerlo en línea con los demás elementos */
+}
