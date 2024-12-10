@@ -39,7 +39,7 @@
                 
             
                 {% if user.is_authenticated %}
-                <form method="post" action="{% url 'logout' %}" class="nav-link-form">
+                <form method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                     <button type="submit" class="nav-link">
                         <img src="{% static 'img/logout.png' %}" alt="Logout" style="width: 24px; vertical-align: middle; margin-right: 5px;">

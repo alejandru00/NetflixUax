@@ -37,7 +37,15 @@
         flex-grow: 1;
     }
 
-    .header-right nav a {
+    .header-right nav {
+        display: flex; /* Usar flexbox */
+        align-items: center; /* Alinear verticalmente */
+        justify-content: space-around; /* Espaciado uniforme entre los elementos */
+        gap: 20px; /* Opcional: espacio adicional entre elementos */
+    }
+
+    .header-right nav a, 
+    .header-right nav form {
         color: #ffffff;
         margin-left: 20px;
         text-decoration: none;
@@ -45,8 +53,14 @@
         font-weight: 600; /* Letras más gorditas */
         transition: color 0.3s ease-in-out;
     }
+    .header-right nav button {
+        all: unset; /* Resetea estilos para botones */
+        cursor: pointer; /* Añade puntero tipo mano */
+        color: #ffffff;
+    }
 
-    .header-right nav a:hover {
+    .header-right nav a:hover,
+    .header-right nav button:hover {
         color: #ffe600; /* Cambia el color al pasar el cursor */
     }
 
@@ -70,7 +84,7 @@
     /* Movie Grid */
     .movie-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
         gap: 20px;
         margin: 20px;
         margin-bottom: 50px;
@@ -194,5 +208,10 @@
 
 /* Asegura el mismo estilo para formularios dentro del nav */
 .nav-link-form {
-    display: inline; /* Mantenerlo en línea con los demás elementos */
+    display: inline-flex; /* Asegura alineación horizontal como inline */
+    margin-left: 20px; /* Espaciado igual que los enlaces */
+    text-decoration: none; /* Sin subrayado */
+    font-size: inherit; /* Hereda el tamaño de fuente */
+    font-weight: inherit; /* Hereda el grosor de texto */
+    color: inherit; /* Hereda el color de los enlaces */
 }
